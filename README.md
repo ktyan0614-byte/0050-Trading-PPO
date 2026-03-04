@@ -1,2 +1,40 @@
-# 0050-Trading-PPO
-A reinforcement learning trading strategy using PPO on Taiwan ETF 0050.
+# 📈 股票爬蟲與自動交易策略分析
+**(Stock Web Scraping and Automated Trading Strategy Analysis on 0050 ETF)**
+
+本專案旨在利用 Python 進行台灣股票市場（以 0050 ETF 為例）的歷史數據分析，並實作傳統技術指標與現代深度強化學習（Deep Reinforcement Learning）模型，藉由模擬交易回測，探討不同策略在真實市場環境下的績效與行為差異，協助投資者建立基於數據分析的客觀決策模型。
+
+## 🛠️ 技術與環境 (Tech Stack)
+* **資料獲取**: `yfinance` 
+* **資料處理與特徵工程**: `pandas`, `numpy`
+* **強化學習框架**: `stable-baselines3` (PPO), `gym`
+* **視覺化**: `matplotlib`
+
+## 📊 交易策略介紹 (Trading Strategies)
+本專案針對台股市場，設計並比較了以下幾種自動化交易策略：
+
+1. **大盤指數 (Market Index)**: 買入並持有，作為所有策略的基準線 (Baseline)。
+2. **黃金交叉策略 (Golden Cross)**: 基於移動平均線 (MA) 設計。當 50 日短期均線向上突破 200 日長期均線時視為買入信號；反之為賣出信號。優點為趨勢明確，缺點為信號滯後。
+3. **布林帶策略 (Bollinger Bands)**: 基於價格波動性設計。利用 20 日均線加上/減去 2 倍標準差建構通道，跌破下軌買進，突破上軌賣出。適合震盪市場，利用價格回歸均值的特性獲利。
+4. **強化學習模型 (PPO, Proximal Policy Optimization)**: 
+   由於 PPO 在連續動作空間中表現穩健，本專案將其應用於股票買賣場景，動作空間設定為 `[-1, 1]` 來決定部分買入或賣出的比例。神經網路結構採用兩層隱藏層（每層 256 個神經元）。
+
+## 🔬 模擬結果與分析 (Results & Analysis)
+
+在 2022-2024 年的測試數據期間內，各策略表現如下：
+* **黃金交叉與布林帶策略**：在這段具備明確波段與震盪的市場期間，兩種傳統策略的表現皆優於市場指數。
+* **PPO 強化學習模型**：模型的獎勵函數 (Reward Function) 設計為鼓勵淨資產增長，並**懲罰高波動和不穩定交易行為**。由累積收益曲線可知，PPO 模型的累計資產值微幅超過初始資金與市場基準。
+* **模型特性發現**：PPO 模型展現出極強的「抗跌與低波動」特性。在市場大跌的區間發揮了良好的下檔保護 (Downside Protection) 作用，成功在波動市場中保持穩定收益。
+
+*<img width="926" height="478" alt="chart" src="https://github.com/user-attachments/assets/d917c2bb-55bc-4756-9e32-e25334f5e517" />
+*
+
+## 🚀 如何執行本專案 (How to Run)
+為確保專案具備 100% 的可重現性並避免本地端環境版本衝突，本專案已將外部依賴改為穩定的 `yfinance`，強烈建議使用 **Google Colab** 執行：
+1. 下載本專案中的 `.ipynb` 執行檔。
+2. 開啟 [Google Colab](https://colab.research.google.com/) 並將檔案上傳。
+3. 依序執行 Notebook 中的儲存格，程式將自動獲取最新資料並開始訓練與回測 PPO 模型。
+
+## 🔮 結論與未來展望 (Future Work)
+1. **模型改進**: 考慮整合基本面數據 (如經濟指標) 以提升長期穩定性；加入基於風險調整後收益 (如夏普比率) 的獎勵設計，進一步減少收益波動。
+2. **多市場測試**: 將該模型應用於其他市場 (如債券或外匯) 進行廣泛測試，驗證通用性。
+3. **演算法延伸**: 探索更複雜的強化學習算法 (如 DDPG 或 Soft Actor-Critic, SAC)，提升在連續動作空間中的性能；或集成多種策略進行組合以降低單一模型風險。
